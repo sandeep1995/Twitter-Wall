@@ -7,7 +7,7 @@ define('CONSUMER_SECRET', 'GKfw9dm4BsmgwvmDNK2MCxoUtq6jeFYkS1VWqCzrnCSaD6oTvv');
 define('OAUTH_CALLBACK', 'http://127.0.0.1/hack/callback.php');
 $access_token = $_SESSION['access_token'];
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
-$user = $connection->get("account/verify_credentials");
+//$user = $connection->get("account/verify_credentials");
 $tweets = $connection->get('search/tweets', array('q' => '#hackathon', 'result_type'=> 'recent', 'count' =>10));
 foreach($tweets->statuses as $key=> $val){
     ?>

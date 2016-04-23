@@ -102,15 +102,16 @@ define('OAUTH_CALLBACK', 'http://127.0.0.1/hackathon/callback.php');
     <div class="container" id="tweetboxapp">
         <div class="row">
             <br>
-            <div class="col-md-4" style="border: 1px solid #ccc; box-shadow: 1px 1px 1px #ccc; margin-bottom: 20px; padding: 20px;">
+            <div class="col-md-4 user-info">
+                <div style="border: 1px solid #ccc; box-shadow: 1px 1px 1px #ccc; margin-bottom: 20px; padding: 20px;">
                 <?php
-                 $access_token = $_SESSION['access_token'];
+                $access_token = $_SESSION['access_token'];
                 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
                 $user = $connection->get("account/verify_credentials");
                 ?>
                 <br>
                 <img class="img-responsive" src="<?php echo $user->profile_image_url; ?>">
-                <h3 class="large">
+                <h3>
                     <?php
                     echo "@".$user->screen_name;
                     ?>
@@ -123,21 +124,27 @@ define('OAUTH_CALLBACK', 'http://127.0.0.1/hackathon/callback.php');
                         ?>
                     </small>
                 </h3>
-            <div class="row">
-						<div class="alert alert-danger" id="error-msg" style="display: none;"></div>
+                <div class="row">
+						<div class="alert alert-success" id="error-msg" style="display: none;"></div>
 						<form class="form-horizontal" method="post" id="status-update-form">
 							<div class="form-group">
 								<div class="col-sm-8">
 									<textarea class="form-control" rows="2" name="status" id="status" placeholder="Use hashtag #hackathon"></textarea>
 								</div>
 								<div class="col-sm-4">
-									<button type="submit" class="btn btn-success" style="padding: 13.4px;">Post</button>
+									<button type="submit" class="btn btn-success" style="padding: 13.4px;">Tweet</button>
 								</div>
 							</div>
 						</form>
             </div>
+                <p class="well">
+                    New tweets are coming each minute.
+                </p>
             </div>
-            <div class="col-md-8">
+            
+            </div>
+            
+           <div class="col-md-8">
                 <div id="tweets">
                 </div>
             </div>
@@ -158,7 +165,7 @@ define('OAUTH_CALLBACK', 'http://127.0.0.1/hackathon/callback.php');
 				e.preventDefault();
 				var status = $('#status').val();
 				if (status == "") {
-					$("#error-msg").html('Hey! Please enter something').fadeIn();
+					$("#error-msg").html('Hey! Please enter something').slideDown();
 					setTimeout(function() {
 						$("#error-msg").slideUp();
 					}, 1000);
@@ -177,6 +184,7 @@ define('OAUTH_CALLBACK', 'http://127.0.0.1/hackathon/callback.php');
 								$("#error-msg").slideUp();
 							}, 1000);
 							$('#status').val('');
+                            pullPost();
 						},
 						error: function() {
 							$("#error-msg").html('There is some error occured').fadeIn();
@@ -185,7 +193,6 @@ define('OAUTH_CALLBACK', 'http://127.0.0.1/hackathon/callback.php');
 							}, 3000);
 						},
 						complete: function() {
-                            pullPost();
 						}
 					});
 				}
@@ -198,7 +205,7 @@ define('OAUTH_CALLBACK', 'http://127.0.0.1/hackathon/callback.php');
 					method: "get",
 					success: function(data) {
 						setTimeout(function() {
-							$("#error-msg").fadeOut();
+							$("#error-msg").slideUp();
 						}, 3000);
 						$('#tweets').html(data);
 					},
@@ -214,7 +221,9 @@ define('OAUTH_CALLBACK', 'http://127.0.0.1/hackathon/callback.php');
 				pullPost();
 			};
             
-            setTimeout(pullPost,60000);
+            setInterval(function(){
+                pullPost();
+            }, 60000);
     </script>
 </body>
 
